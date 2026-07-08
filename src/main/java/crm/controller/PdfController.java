@@ -1,11 +1,11 @@
 package crm.controller;
 
+import crm.entity.Pdf;
+import crm.service.PdfService;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
-import crm.entity.Pdf;
-import crm.service.PdfService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
