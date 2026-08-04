@@ -9,7 +9,7 @@ import java.util.Locale;
 public class CsvViewResolver implements ViewResolver {
 
     @Override
-    public View resolveViewName(String s, Locale locale) throws Exception {
+    public View resolveViewName(String s, Locale locale) {
         return new CsvView();
     }
 
