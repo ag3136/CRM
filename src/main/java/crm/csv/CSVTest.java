@@ -1,38 +1,43 @@
 package crm.csv;
 
 import com.opencsv.CSVReader;
-import crm.utils.ReadDataUtils;
+import crm.config.AzureBlobStorageService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CSVTest {
+@Component
+public class CSVTest implements CommandLineRunner {
 
-    public static void main(String[] args) {
-        File document = ReadDataUtils.ReadFile("Select CSV file", null, "Only CSV Files", "csv");
-//        System.out.println(document.getName());
+    private final AzureBlobStorageService azureBlobStorageService;
+    private final String csvBlobName;
 
-        CSVReader reader;
+    public CSVTest(AzureBlobStorageService azureBlobStorageService,
+                   @Value("${crm.csv.blob-name:sample-data.csv}") String csvBlobName) {
+        this.azureBlobStorageService = azureBlobStorageService;
+        this.csvBlobName = csvBlobName;
+    }
+
+    @Override
+    public void run(String... args) {
         List<Object[]> data = new ArrayList<>();
-        try {
-            reader = new CSVReader(new FileReader(document));
+        try (Reader blobReader = new InputStreamReader(azureBlobStorageService.download(csvBlobName));
+             CSVReader reader = new CSVReader(blobReader)) {
             String[] line;
             while ((line = reader.readNext()) != null) {
-//                System.out.println(line[1] + "\t" + line[2]);
                 data.add(line);
-                if(line[1].equals("QUICK SUB")){
+                if (line.length > 2 && "QUICK SUB".equals(line[1])) {
                     System.out.println(line[0] + "\t" + line[1] + "\t" + line[2]);
                 }
-
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-		/*System.out.println(data.get(0)[1] + "\t" + data.get(0)[2]);
-		System.out.println(data.get(1)[1] + "\t" + data.get(1)[2]);*/
     }
-
 }
