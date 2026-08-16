@@ -1,22 +1,31 @@
 package crm.controller;
 
-import org.springframework.boot.autoconfigure.web.ErrorController;
+import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
+
+@Controller
 public class MyErrorController implements ErrorController {
 
-    private static final String PATH = "/error";
-
-    @RequestMapping(value = PATH)
-    public String error() {
-        return "Error handling";
-    }
-
-    @Override
-    public String getErrorPath() {
-        return PATH;
+    @RequestMapping("/error")
+    public String handleError(HttpServletRequest request) {
+        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+        
+        if (status != null) {
+            int statusCode = Integer.parseInt(status.toString());
+            
+            if (statusCode == 404) {
+                return "error-404";
+            } else if (statusCode == 403) {
+                return "403";
+            } else if (statusCode == 500) {
+                return "error-500";
+            }
+        }
+        return "error";
     }
 
 }
